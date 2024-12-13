@@ -1,18 +1,24 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 // # posts context
 const PostsContext = createContext();
 
 // # posts context provider export
 export const PostsContextProvider = ({ children }) => {
-  const [postsList, setPostsList] = useState({
-    title: "titolo",
-    description: "description text",
-    image: "image path",
-  });
+  const [postsList, setPostsList] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/posts/")
+      .then((res) => res.json())
+      .then((data) => {
+        setPostsList(data);
+      });
+  }, []);
 
   return (
-    <PostsContext.Provider value={postsList}>{children}</PostsContext.Provider>
+    <PostsContext.Provider value={{ postsList }}>
+      {children}
+    </PostsContext.Provider>
   );
 };
 
